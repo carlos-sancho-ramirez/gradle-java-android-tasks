@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'checkstyle'
+
+group = 'com.github.carlos-sancho-ramirez'
+version = '1.0.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId 'gradle-java-android-tasks'
+            from components.java
+
+            artifact sourceJar
+            artifact packageJavadoc
+        }
+    }
+}
+
+javadoc {
+  source = sourceSets.main.allJava
+  classpath = configurations.compileClasspath
+
+  options {
+    source '8'
+    setMemberLevel JavadocMemberLevel.PUBLIC
+    setAuthor false
+
+    links "https://docs.oracle.com/javase/8/docs/api/"
+  }
+}
+
+dependencies {
+    //implementation 'dev.gradleplugins:gradle-api:8.0'
+    compileOnly gradleApi()
+}
